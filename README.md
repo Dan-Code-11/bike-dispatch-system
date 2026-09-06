@@ -11,45 +11,45 @@
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
-> *Screenshots coming soon — dispatch dashboard, spatial analytics, and prediction lab.*
+> Screenshots coming soon — dispatch dashboard, spatial analytics, and prediction lab.
 
 ---
 
-## ✨ Features
+## Features
 
-### 🧠 Prediction
+### Prediction
 - **Multi-horizon LSTM** — shared encoder + dual head: 1h/2h/3h anchor points + 3h full curve
 - **Real data trained** — 2025 Jan–May Citi Bike trips, 151 days × 288 time slots × 30 stations
 - **Horizon-aware dispatch input** — worst-horizon shortage/surplus per zone
 
-### 🚚 Dispatch Optimization
+### Dispatch Optimization
 - **Min-cost flow (SSP solver)** — global optimal vehicle rebalancing, 0.01–0.05s per solve
 - **OSRM real-street routing** — actual road network distance, not straight-line
 - **Greedy fallback** — instant nearest-pair matching when OSRM unavailable
 - **13–16% cost reduction** vs greedy baseline at peak hours
 
-### 🗺️ Spatial Analytics (4 layers)
+### Spatial Analytics (4 layers)
 - **Timeline replay** — 24h space-time cube animation, 3 modes (need / ratio / vehicles)
 - **OD flow arcs** — gravity + IPF origin-destination matrix reconstruction, top-K flow visualization
 - **Moran's I + LISA** — global spatial autocorrelation test + local HH/HL/LH/LL cluster detection
 - **Typical day comparison** — weekday vs weekend tidal pattern contrast, peak-shift analysis
 
-### 📊 Operations Dashboard
+### Operations Dashboard
 - **Real-time monitoring** — WebSocket live stats, 2s refresh
 - **KPI analytics** — shortage/surplus tracking, system health indicators
 - **Alert center** — threshold-based alert rules + history
 - **Dispatch queue** — task list with embedded route map
 
-### 🎨 Design
+### Design
 - **Uber 2024 dark UI** — #0A0A0A background, #06C167 single action color
 - **Leaflet + ECharts** — interactive maps + analytic charts
 - **Responsive layout** — optimized for desktop dashboard use
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - [Docker](https://docs.docker.com/get-docker/) + Docker Compose
@@ -63,15 +63,15 @@ cd bike-dispatch-system
 docker compose up -d --build
 ```
 
-> **First run note**: OSRM automatically downloads NYC road network data (~150MB) and builds the routing graph (5–15 minutes). Until ready, the backend falls back to straight-line distance — all other features work immediately.
+> First run note: OSRM automatically downloads NYC road network data (~150MB) and builds the routing graph (5–15 minutes). Until ready, the backend falls back to straight-line distance — all other features work immediately.
 
 ### Access the app
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| **Frontend** | http://localhost:8080 | Main dashboard |
-| **Backend API** | http://localhost:8000/docs | FastAPI Swagger UI |
-| **OSRM** | http://localhost:5000 | Routing engine status |
+| Frontend | http://localhost:8080 | Main dashboard |
+| Backend API | http://localhost:8000/docs | FastAPI Swagger UI |
+| OSRM | http://localhost:5000 | Routing engine status |
 
 ### Stop
 
@@ -81,22 +81,22 @@ docker compose down
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | Vue 3, Vite, Vue Router, Pinia |
-| **Maps & Charts** | Leaflet, ECharts, leaflet.heat |
-| **Backend** | FastAPI, Python 3.12 |
-| **ML** | PyTorch, NumPy |
-| **Optimization** | Custom SSP min-cost flow, OSRM |
-| **Database** | PostgreSQL (dispatch history registry) |
-| **Data** | Citi Bike NYC System Data (© Lyft) |
-| **DevOps** | Docker Compose, GitHub Codespaces |
+| Frontend | Vue 3, Vite, Vue Router, Pinia |
+| Maps & Charts | Leaflet, ECharts, leaflet.heat |
+| Backend | FastAPI, Python 3.12 |
+| ML | PyTorch, NumPy |
+| Optimization | Custom SSP min-cost flow, OSRM |
+| Database | PostgreSQL (dispatch history registry) |
+| Data | Citi Bike NYC System Data (© Lyft) |
+| DevOps | Docker Compose, GitHub Codespaces |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 bike-dispatch-system/
@@ -146,9 +146,9 @@ bike-dispatch-system/
 
 ---
 
-## 📖 Technical Report
+## Technical Report
 
-For deep technical details — architecture, algorithms, prediction model design, spatial analysis methodology, and performance benchmarks — check out the **[Technical Report](https://dan-code-11.github.io/bike-dispatch-system/)**.
+For deep technical details — architecture, algorithms, prediction model design, spatial analysis methodology, and performance benchmarks — check out the [Technical Report](https://dan-code-11.github.io/bike-dispatch-system/).
 
 Topics covered:
 - System architecture & data pipeline
@@ -160,7 +160,7 @@ Topics covered:
 
 ---
 
-## 🧪 Development
+## Development
 
 ### Backend (local, without Docker)
 
@@ -188,7 +188,7 @@ python train_model.py
 
 ---
 
-## 📊 Data
+## Data
 
 - **Source**: [Citi Bike System Data](https://citibikenyc.com/system-data) (© Lyft)
 - **Period**: January – May 2025
@@ -198,7 +198,7 @@ python train_model.py
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
@@ -208,7 +208,7 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 <div align="center">
 
-**Built with ☕ by Dan-Code-11**
+Built by Dan-Code-11
 
 [GitHub](https://github.com/Dan-Code-11) · [Technical Report](https://dan-code-11.github.io/bike-dispatch-system/) · [Issues](https://github.com/Dan-Code-11/bike-dispatch-system/issues)
 
