@@ -1,6 +1,6 @@
 # BikeDispatch · Citi Bike NYC Rebalancing System
 
-> AI-powered bike-sharing rebalancing decision support — LSTM multi-horizon prediction + min-cost flow dispatch optimization, built on real Citi Bike NYC data.
+> Data-driven bike-sharing rebalancing system — LSTM multi-horizon prediction + min-cost flow dispatch optimization, built on real Citi Bike NYC data.
 
 [![Vue](https://img.shields.io/badge/Vue-3-42b883?logo=vue.js&logoColor=white)](https://vuejs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
