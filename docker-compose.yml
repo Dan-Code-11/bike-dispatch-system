@@ -1,0 +1,149 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: tidebic
+      POSTGRES_USER: tidebic
+      POSTGRES_PASSWORD: tidebic
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # ---- OSRM 真实街道路线引擎（纽约市 Manhattan 区域） ----
+  # 使用方式（首次启动会下载 OSM + 建图，磁盘 ~2GB，耗时几分钟到十几分钟）：
+  #   docker compose up osrm -d
+  # 容器启动后：
+  #   HTTP 接口 http://localhost:5000/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?...
+  #   在后端 container 内通过 hostname=osrm:5000 访问（BIKE_OSRM_URL=http://osrm:5000，默认值）
+  # 若不想首次建图，可跳过该服务：docker compose up backend frontend -d
+  #   后端 scheduler.py 会自动降级为两站直线，不影响其余功能
+  osrm:
+    # 国内 Docker Hub mirror（daocloud / 163 / ustc）对 v5.27.1 常返回 HEAD 403，
+    # 所以默认改走 GitHub Container Registry（ghcr.io），它基本不被国内 mirror 劫持，且
+    # Project-OSRM 官方同步发布（tag 与 docker.io/osrm/osrm-backend 完全一致）。
+    # 若你网络能直连 Docker Hub，可改回：image: osrm/osrm-backend:v5.27.1
+    image: ghcr.io/project-osrm/osrm-backend:v5.27.1
+    # 兜底：ghcr.io 也被墙的话，再回退到 Docker Hub 官方 latest（tag 更通用，mirror 缓存率高）
+    #image: osrm/osrm-backend:latest
+    ports:
+      - "5000:5000"
+    volumes:
+      # OSM 原始 pbf / contracted graph 持久化目录（宿主机首次会自动下载，之后可复用）
+      - ./data/osrm:/data
+    # init container 模式：把"下载 pbf + 建图"塞到同一 image 的 command 里
+    # osrm/osrm-backend image 内置 osrm-extract/osrm-partition/osrm-customize/osrm-routed
+    # 参考：https://github.com/Project-OSRM/osrm-backend
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+        OSM_URL="https://download.bbbike.org/osm/bbbike/NewYork/NewYork.osm.pbf"
+        PBF_FILE="/data/NewYork.osm.pbf"
+        PROFILE="/opt/car.lua"   # osrm-backend 默认内置 profile (driving)
+        OSRM_BASE="/data/NewYork"
+        mkdir -p /data
+
+        # 1) 下载 OSM pbf（仅当缺失时；BBBike NYC 切片 ~120MB，覆盖 Manhattan/Queens/Brooklyn 核心）
+        if [ ! -f "$${PBF_FILE}" ]; then
+          echo "[OSRM] 首次启动：下载 NYC OSM 切片 (BBBike) ..."
+          # BBBike 国内慢 → 提供两个兜底 URL
+          for URL in \
+            "$${OSM_URL}" \
+            "https://www.dropbox.com/s/8qvcy5b9ggpk36j/NewYork.osm.pbf?raw=1" \
+            "https://github.com/Project-OSRM/osrm-backend/releases/download/v5.24.0/germany-latest.osm.pbf" ; do
+            echo "[OSRM] 尝试: $$URL"
+            if command -v curl >/dev/null 2>&1; then
+              curl -fSL --retry 3 --retry-delay 5 --max-time 600 -o "$${PBF_FILE}.tmp" "$$URL" && mv "$${PBF_FILE}.tmp" "$${PBF_FILE}" && break || true
+            elif command -v wget >/dev/null 2>&1; then
+              wget --tries=3 --timeout=600 -O "$${PBF_FILE}.tmp" "$$URL" && mv "$${PBF_FILE}.tmp" "$${PBF_FILE}" && break || true
+            else
+              # osrm image 里默认没有 curl/wget — 用 busybox wget（alpine）
+              if command -v busybox >/dev/null 2>&1; then
+                busybox wget -T 600 -O "$${PBF_FILE}.tmp" "$$URL" && mv "$${PBF_FILE}.tmp" "$${PBF_FILE}" && break || true
+              fi
+            fi
+            rm -f "$${PBF_FILE}.tmp"
+          done
+          if [ ! -f "$${PBF_FILE}" ]; then
+            echo "[OSRM][WARN] 下载失败（可能是网络受限）。后端会走直线降级。"
+            echo "[OSRM][WARN] 你也可以手动下载放到 data/osrm/NewYork.osm.pbf 后重启容器。"
+            # 进入"空跑"模式无限 sleep，避免 compose 反复重启
+            sleep infinity
+          fi
+          echo "[OSRM] 下载完成：$$(wc -c < $${PBF_FILE}) bytes"
+        fi
+
+        # 2) 若 contract 产物缺失，建图
+        if [ ! -f "$${OSRM_BASE}.osrm.cell_metrics" ]; then
+          echo "[OSRM] 构建路网图（extract → partition → customize），首次预计几分钟..."
+          osrm-extract -p "$${PROFILE}" "$${PBF_FILE}"
+          osrm-partition "$${OSRM_BASE}.osrm"
+          osrm-customize "$${OSRM_BASE}.osrm"
+          echo "[OSRM] 建图完成。"
+        else
+          echo "[OSRM] 已有 contract 产物，跳过建图。"
+        fi
+
+        # 3) 启动 routed，监听 0.0.0.0:5000（容器内 5000 → 对外映射 5000）
+        echo "[OSRM] 启动 osrm-routed  on 0.0.0.0:5000 ..."
+        exec osrm-routed --algorithm mld --port 5000 -i 0.0.0.0 "$${OSRM_BASE}.osrm"
+    restart: unless-stopped
+    # 建图时内存可能需要 >2GB，NYC 切片 16GB 机器够用
+    mem_limit: 4g
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget -qO- http://127.0.0.1:5000/nearest/v1/driving/0,0 2>/dev/null || exit 1"]
+      interval: 30s
+      timeout: 8s
+      retries: 20
+      start_period: 120s  # 首次建图给 2 分钟再开始检查
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://tidebic:tidebic@db:5432/tidebic
+      BIKE_DATA_DIR: /app/data
+      PYTHONPATH: /app
+      # 默认禁用自动训练（已用服务器训练好的真实权重直接推理）
+      BIKE_AUTO_TRAIN: "0"
+      # OSRM 地址（compose 内部网络 hostname=osrm:5000；若未启动 osrm 容器自动走直线降级）
+      BIKE_OSRM_URL: "http://osrm:5000"
+    volumes:
+      # Hot-reload: mount local source code, changes are picked up by uvicorn --reload
+      - ./backend/app:/app/app:ro
+      # Mount trained LSTM weights (backend/models/lstm_weights.pth / lstm_weights_multi.pth)
+      - ./backend/models:/app/models:ro
+      # Mount data so nyu_zones.geojson / npz / OSM graph 数据保持同步
+      - ./data:/app/data:ro
+    depends_on:
+      - db
+      # backend 不依赖 osrm（osrm 是可选增强，启动失败不阻塞后端）
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      VITE_BACKEND_URL: http://backend:8000
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      # Hot-module-reload
+      - ./frontend/src:/app/src:ro
+      - ./frontend/public:/app/public:ro
+      - ./frontend/index.html:/app/index.html:ro
+      - ./frontend/vite.config.js:/app/vite.config.js:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:

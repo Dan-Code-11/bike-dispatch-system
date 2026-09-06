@@ -1,0 +1,7 @@
+# requirements-train.txt — 训练最小依赖(不需要fastapi/psycopg/shapely/pyproj等API层依赖)
+# 强烈建议用 conda 安装 pytorch(带系统CUDA),比 pip 稳定:
+#   conda create -n bike python=3.10 -y
+#   conda activate bike
+#   conda install pytorch pytorch-cuda=12.4 -c pytorch -c nvidia -y
+#   pip install -r requirements-train.txt
+numpy==1.26.4

@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build output
+dist/
+frontend/dist/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+
+# Editor recovery
+*_recovered.txt
+
+# Large data directories (auto-generated / raw source — not needed to run)
+# OSRM auto-downloads NYC pbf + builds graph on first run (~530MB)
+data/osrm/
+# Raw Citi Bike parquet source (~790MB) — already processed into data/*.npz
+citibike/
+# Early UI design drafts (not part of runnable project)
+design_proposal/

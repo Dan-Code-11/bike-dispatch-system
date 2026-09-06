@@ -1,0 +1,212 @@
+[
+  {
+    "zone_id": "6140.05",
+    "name": "W 21 St & 6 Ave",
+    "lat": 40.74173969,
+    "lng": -73.99415556,
+    "freq": 116645
+  },
+  {
+    "zone_id": "6233.04",
+    "name": "Pier 61 at Chelsea Piers",
+    "lat": 40.746872,
+    "lng": -74.00821,
+    "freq": 106910
+  },
+  {
+    "zone_id": "5788.13",
+    "name": "Lafayette St & E 8 St",
+    "lat": 40.73020662385873,
+    "lng": -73.99102627346412,
+    "freq": 98942
+  },
+  {
+    "zone_id": "5329.03",
+    "name": "West St & Chambers St",
+    "lat": 40.71754834,
+    "lng": -74.01322069,
+    "freq": 89710
+  },
+  {
+    "zone_id": "5905.14",
+    "name": "University Pl & E 14 St",
+    "lat": 40.734814,
+    "lng": -73.992085,
+    "freq": 89368
+  },
+  {
+    "zone_id": "5905.12",
+    "name": "Broadway & E 14 St",
+    "lat": 40.7345456545024,
+    "lng": -73.99074144398139,
+    "freq": 89048
+  },
+  {
+    "zone_id": "5779.11",
+    "name": "Ave A & E 14 St",
+    "lat": 40.730310708059676,
+    "lng": -73.98047179123444,
+    "freq": 85240
+  },
+  {
+    "zone_id": "6173.08",
+    "name": "Broadway & W 25 St",
+    "lat": 40.74286877312112,
+    "lng": -73.98918628692627,
+    "freq": 82045
+  },
+  {
+    "zone_id": "6197.08",
+    "name": "E 33 St & 1 Ave",
+    "lat": 40.74322681432173,
+    "lng": -73.97449783980846,
+    "freq": 79099
+  },
+  {
+    "zone_id": "5374.01",
+    "name": "Norfolk St & Broome St",
+    "lat": 40.7172274,
+    "lng": -73.98802084,
+    "freq": 78091
+  },
+  {
+    "zone_id": "5303.06",
+    "name": "Clinton St & Grand St",
+    "lat": 40.71559509,
+    "lng": -73.9870295,
+    "freq": 76604
+  },
+  {
+    "zone_id": "6072.06",
+    "name": "Greenwich Ave & 8 Ave",
+    "lat": 40.7390169121,
+    "lng": -74.0026376103,
+    "freq": 76604
+  },
+  {
+    "zone_id": "5492.05",
+    "name": "Cleveland Pl & Spring St",
+    "lat": 40.722103786686034,
+    "lng": -73.99724900722504,
+    "freq": 74895
+  },
+  {
+    "zone_id": "6098.10",
+    "name": "Broadway & E 21 St",
+    "lat": 40.73988841338602,
+    "lng": -73.98958593916953,
+    "freq": 73870
+  },
+  {
+    "zone_id": "6257.03",
+    "name": "W 24 St & 7 Ave",
+    "lat": 40.74487634301093,
+    "lng": -73.9952988550962,
+    "freq": 71699
+  },
+  {
+    "zone_id": "5980.10",
+    "name": "E 17 St & Broadway",
+    "lat": 40.737006,
+    "lng": -73.990134,
+    "freq": 71157
+  },
+  {
+    "zone_id": "6072.11",
+    "name": "8 Ave & W 16 St",
+    "lat": 40.740983,
+    "lng": -74.001702,
+    "freq": 67505
+  },
+  {
+    "zone_id": "6289.06",
+    "name": "Broadway & W 29 St",
+    "lat": 40.7462009,
+    "lng": -73.98855723,
+    "freq": 67468
+  },
+  {
+    "zone_id": "5763.03",
+    "name": "Carmine St & 6 Ave",
+    "lat": 40.73038599,
+    "lng": -74.00214988,
+    "freq": 67030
+  },
+  {
+    "zone_id": "5593.01",
+    "name": "E 1 St & 1 Ave",
+    "lat": 40.72335597960796,
+    "lng": -73.98864984512329,
+    "freq": 65194
+  },
+  {
+    "zone_id": "6039.06",
+    "name": "Washington St & Gansevoort St",
+    "lat": 40.73932293463802,
+    "lng": -74.00811896566643,
+    "freq": 64771
+  },
+  {
+    "zone_id": "5382.06",
+    "name": "Grand St & Elizabeth St",
+    "lat": 40.718822,
+    "lng": -73.99596,
+    "freq": 63931
+  },
+  {
+    "zone_id": "6257.06",
+    "name": "W 27 St & 7 Ave",
+    "lat": 40.74665,
+    "lng": -73.99392,
+    "freq": 63638
+  },
+  {
+    "zone_id": "5303.08",
+    "name": "Canal St & Rutgers St",
+    "lat": 40.71427487,
+    "lng": -73.98990025,
+    "freq": 63538
+  },
+  {
+    "zone_id": "5297.02",
+    "name": "Vesey Pl & River Terrace",
+    "lat": 40.7153379,
+    "lng": -74.01658354,
+    "freq": 62956
+  },
+  {
+    "zone_id": "5989.02",
+    "name": "W 15 St & 6 Ave",
+    "lat": 40.738046142482766,
+    "lng": -73.99642959237099,
+    "freq": 62460
+  },
+  {
+    "zone_id": "5880.02",
+    "name": "W 4 St & 7 Ave S",
+    "lat": 40.73401143,
+    "lng": -74.00293877,
+    "freq": 62345
+  },
+  {
+    "zone_id": "5847.01",
+    "name": "Christopher St & Greenwich St",
+    "lat": 40.73291553,
+    "lng": -74.00711384,
+    "freq": 61298
+  },
+  {
+    "zone_id": "6306.06",
+    "name": "W 22 St & 10 Ave",
+    "lat": 40.74691959,
+    "lng": -74.00451887,
+    "freq": 60898
+  },
+  {
+    "zone_id": "5561.06",
+    "name": "Lafayette St & Jersey St",
+    "lat": 40.72456089,
+    "lng": -73.99565293,
+    "freq": 60737
+  }
+]
