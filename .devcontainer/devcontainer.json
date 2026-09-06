@@ -1,0 +1,38 @@
+{
+  "name": "BikeDispatch — Citi Bike NYC Rebalancing",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "frontend",
+  "workspaceFolder": "/app",
+  "forwardPorts": [8080, 8000, 5000, 5432],
+  "portsAttributes": {
+    "8080": {
+      "label": "Frontend (Vue 3)",
+      "onAutoForward": "openBrowser"
+    },
+    "8000": {
+      "label": "Backend API (FastAPI)",
+      "onAutoForward": "notify"
+    },
+    "5000": {
+      "label": "OSRM Routing Engine",
+      "onAutoForward": "silent"
+    }
+  },
+  "postCreateCommand": "echo '🚲 BikeDispatch Codespace ready!' && echo 'Frontend: http://localhost:8080' && echo 'API Docs: http://localhost:8000/docs' && echo 'Note: OSRM downloads NYC map on first start (5-15 min), backend auto-falls back to straight-line distance until ready.'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "vue.volar",
+        "ms-azuretools.vscode-docker",
+        "dbaeumer.vscode-eslint"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  "remoteUser": "root"
+}
