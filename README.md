@@ -73,7 +73,7 @@ cd bike-dispatch-system
 docker compose up -d --build
 ```
 
-> First run note: OSRM automatically downloads NYC road network data (~150MB) and builds the routing graph (5–15 minutes). Until ready, the backend falls back to straight-line distance — all other features work immediately.
+> First run note: OSRM automatically downloads NYC road network data (~120MB) and builds the routing graph (5–15 minutes). Until ready, the backend falls back to straight-line distance — all other features work immediately.
 
 ### Access the app
 
@@ -97,7 +97,7 @@ docker compose down
 |-------|-----------|
 | Frontend | Vue 3, Vite, Vue Router, Pinia |
 | Maps & Charts | Leaflet, ECharts, leaflet.heat |
-| Backend | FastAPI, Python 3.12 |
+| Backend | FastAPI, Python 3.10 |
 | ML | PyTorch, NumPy |
 | Optimization | Custom SSP min-cost flow, OSRM |
 | Database | PostgreSQL (dispatch history registry) |
@@ -147,7 +147,7 @@ bike-dispatch-system/
 ├── data/
 │   ├── bikes_5min.npz         # 151 × 288 × 30 availability cube
 │   ├── trips_5min.npz         # Flow matrix
-│   ├── nyu_zones.geojson      # 30 station zones
+│   ├── manhattan_zones.geojson  # 30 station zones
 │   └── stations.json
 ├── .devcontainer/              # GitHub Codespaces config
 ├── docker-compose.yml

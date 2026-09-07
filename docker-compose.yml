@@ -49,11 +49,10 @@ services:
         # 1) 下载 OSM pbf（仅当缺失时；BBBike NYC 切片 ~120MB，覆盖 Manhattan/Queens/Brooklyn 核心）
         if [ ! -f "$${PBF_FILE}" ]; then
           echo "[OSRM] 首次启动：下载 NYC OSM 切片 (BBBike) ..."
-          # BBBike 国内慢 → 提供两个兜底 URL
+          # BBBike 国内慢 → 提供 Dropbox 兜底 URL（只保留 NYC 数据源，避免下载到错误区域的 OSM）
           for URL in \
             "$${OSM_URL}" \
-            "https://www.dropbox.com/s/8qvcy5b9ggpk36j/NewYork.osm.pbf?raw=1" \
-            "https://github.com/Project-OSRM/osrm-backend/releases/download/v5.24.0/germany-latest.osm.pbf" ; do
+            "https://www.dropbox.com/s/8qvcy5b9ggpk36j/NewYork.osm.pbf?raw=1" ; do
             echo "[OSRM] 尝试: $$URL"
             if command -v curl >/dev/null 2>&1; then
               curl -fSL --retry 3 --retry-delay 5 --max-time 600 -o "$${PBF_FILE}.tmp" "$$URL" && mv "$${PBF_FILE}.tmp" "$${PBF_FILE}" && break || true

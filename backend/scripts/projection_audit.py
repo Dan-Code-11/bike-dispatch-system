@@ -23,8 +23,8 @@ from app.services.geoutils import (  # noqa: E402
     load_zones_from_geojson,
 )
 
-# data/nyu_zones.geojson 相对于脚本的位置
-GEOJSON = Path(__file__).resolve().parent.parent.parent / "data" / "nyu_zones.geojson"
+# data/manhattan_zones.geojson 相对于脚本的位置
+GEOJSON = Path(__file__).resolve().parent.parent.parent / "data" / "manhattan_zones.geojson"
 
 
 def main() -> None:

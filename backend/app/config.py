@@ -22,12 +22,12 @@ def now_nyc_hhmm() -> str:
 # - repo_root/
 #   - bike_dispatch_system/
 #     - backend/app/config.py
-#     - data/nyu_zones.geojson
+#     - data/manhattan_zones.geojson
 #
 # When running in Docker we set BIKE_DATA_DIR=/app/data.
 DATA_DIR = Path(os.getenv("BIKE_DATA_DIR", str(Path(__file__).resolve().parents[2] / "data")))
 
-ZONES_GEOJSON_PATH = DATA_DIR / "nyu_zones.geojson"
+ZONES_GEOJSON_PATH = DATA_DIR / "manhattan_zones.geojson"
 
 # Time discretization: stage1 uses 5-minute time slots.
 SIM_INTERVAL_MINUTES = 5

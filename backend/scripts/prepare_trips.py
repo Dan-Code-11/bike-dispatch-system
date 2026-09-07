@@ -6,7 +6,7 @@ prepare_trips.py — 真实 Citi Bike 数据预处理
   data/trips_5min.npz         — 训练用矩阵 [N_day, T_per_day, N_station, 2(outflow,inflow)]
   data/bikes_5min.npz         — 站点车辆数序列 [N_day, T_per_day, N_station]
   data/stations.json          — 站点元数据(id, name, lat, lng)
-  data/nyu_zones.geojson      — 用站点 buffer 自动生成的真实区域(NYU 周边真实坐标)
+  data/manhattan_zones.geojson — 用站点 buffer 自动生成的真实区域(曼哈顿周边真实坐标)
 
 策略:
   1. 以 NYU Washington Square Park (40.7293, -73.9974) 为中心,矩形 bbox 半径 ~2km 过滤
@@ -238,7 +238,7 @@ def main() -> None:
         json.dumps(stations, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"  ✓ {OUT_DIR / 'stations.json'}  ({len(stations)} 站点)")
 
-    # nyu_zones.geojson:用 numpy 生成圆形 buffer(各向异性,考虑纬度修正)
+    # manhattan_zones.geojson:用 numpy 生成圆形 buffer(各向异性,考虑纬度修正)
     features = []
     deg_lat_per_m = 1.0 / 111_000.0          # 1°lat ≈ 111km
     deg_lng_per_m = 1.0 / (111_000.0 * np.cos(np.radians(CENTER_LAT)))  # 1°lng 在 40.7°N
@@ -263,9 +263,9 @@ def main() -> None:
             "geometry": {"type": "Polygon", "coordinates": [ring]},
         })
     geojson = {"type": "FeatureCollection", "features": features}
-    (OUT_DIR / "nyu_zones.geojson").write_text(
+    (OUT_DIR / "manhattan_zones.geojson").write_text(
         json.dumps(geojson, ensure_ascii=False), encoding="utf-8")
-    print(f"  ✓ {OUT_DIR / 'nyu_zones.geojson'}  ({len(features)} 真实区域,NYU 周边真实坐标)")
+    print(f"  ✓ {OUT_DIR / 'manhattan_zones.geojson'}  ({len(features)} 真实区域,曼哈顿周边真实坐标)")
     print()
 
     # ---------------------- Step 6.5: 真实 OD 矩阵聚合（GIS P1 潮汐流线数据源） ----------------------
