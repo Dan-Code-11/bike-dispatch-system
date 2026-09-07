@@ -393,7 +393,7 @@
       </div>
       <div class="timeline-item">
         <h4>Step 2 · Zone Generation</h4>
-        <p>Each station is buffered into a GeoJSON polygon zone (<code>nyu_zones.geojson</code>) with properties including <code>zone_id</code>, <code>name</code>, and trip frequency. These zones serve as the spatial units for all analytics and visualization.</p>
+        <p>Each station is buffered into a GeoJSON polygon zone (<code>manhattan_zones.geojson</code>) with properties including <code>zone_id</code>, <code>name</code>, and trip frequency. These zones serve as the spatial units for all analytics and visualization.</p>
       </div>
       <div class="timeline-item">
         <h4>Step 3 · Temporal Aggregation</h4>
@@ -777,7 +777,7 @@
 ├── data/
 │   ├── bikes_5min.npz                 151 x 288 x 30 availability cube
 │   ├── trips_5min.npz                 Flow matrix
-│   ├── nyu_zones.geojson              30 station zones
+│   ├── manhattan_zones.geojson          30 station zones
 │   ├── stations.json
 │   └── osrm/                          OSRM routing data
 ├── docker-compose.yml
