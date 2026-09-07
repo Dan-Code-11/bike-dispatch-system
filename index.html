@@ -397,7 +397,7 @@
       </div>
       <div class="timeline-item">
         <h4>Step 3 · Temporal Aggregation</h4>
-        <p>Trip events are aggregated into 5-minute bins (288 slices/day) to produce station-level inflow/outflow counts. A cumulative inventory model tracks bike availability across the network, conserving total fleet size (~1,134 bikes) with ±1.2% daily fluctuation from in-transit vehicles.</p>
+        <p>Trip events are aggregated into 5-minute bins (288 slices/day) to produce station-level inflow/outflow counts. A cumulative inventory model tracks bike availability across the network, conserving total fleet size (~1,134 bikes) with ~±1% daily fluctuation from in-transit vehicles.</p>
       </div>
       <div class="timeline-item">
         <h4>Step 4 · Data Cube Serialization</h4>
@@ -412,7 +412,7 @@
     <h3>Data Quality & Consistency</h3>
     <table>
       <tr><th>Metric</th><th>Value</th><th>Note</th></tr>
-      <tr><td>Total fleet (in-station)</td><td>1,124 – 1,138 bikes</td><td>±1.2% daily fluctuation</td></tr>
+      <tr><td>Total fleet (in-station)</td><td>1,126 – 1,142 bikes</td><td>~±1% daily fluctuation</td></tr>
       <tr><td>Station saturation range</td><td>75% – 131%</td><td>All-day, all stations</td></tr>
       <tr><td>Data coverage</td><td>151 days × 288 slices × 30 stations</td><td>~1.3M records</td></tr>
       <tr><td>Missing data</td><td>0%</td><td>Complete coverage Jan–May 2025</td></tr>
@@ -489,13 +489,13 @@
     <div class="code-block">
 <span class="comment"># MultiHorizonLSTM — dual-head design</span>
 <span class="keyword">Input</span>: [batch, seq_len=24, features]  <span class="comment"># 2h history @ 5min</span>
-  ├── Station Embedding: 30 → 16 dims
+  ├── Station Embedding: 30 → 4 dims
   ├── Time Encoding: sin/cos hour + day_of_week
-  └── LSTM Stack: 2 layers × 128 hidden, dropout=0.2
+  └── LSTM Stack: 2 layers × 128 hidden, dropout=0.15
        ├── Head A (Anchors): 3 discrete points (1h/2h/3h need)
        └── Head B (Curve): 36 steps × 5min = 3h full trajectory
-<span class="keyword">Loss</span>: MSE(anchors) + λ × MSE(curve), λ=0.5
-<span class="keyword">Optimizer</span>: AdamW, lr=1e-3, cosine schedule
+<span class="keyword">Loss</span>: 0.55×MSE(anchors) + 0.35×MSE(curve) + 0.10×MAE(anchors)
+<span class="keyword">Optimizer</span>: AdamW, lr=3e-4, cosine schedule
 <span class="keyword">Weights</span>: lstm_weights_multi.pth (~940KB)
     </div>
 
@@ -539,7 +539,7 @@
     </div>
 
     <h3>Algorithm: Successive Shortest Path (SSP)</h3>
-    <p>The solver uses an <b>integer-weighted Successive Shortest Path</b> algorithm with Bellman-Ford for negative-cost residual edges. Weights are scaled by ×100 and rounded to integers, eliminating floating-point precision issues. This replaces the earlier networkx <code>min_cost_flow</code> (network_simplex) which took 20+ seconds on 87-vehicle scenarios.</p>
+    <p>The solver uses an <b>integer-weighted Successive Shortest Path</b> algorithm with Dijkstra + Johnson's potentials for negative-cost residual edges. Weights are scaled by ×100 and rounded to integers, eliminating floating-point precision issues. This replaces the earlier networkx <code>min_cost_flow</code> (network_simplex) which took 20+ seconds on 87-vehicle scenarios.</p>
 
     <table>
       <tr><th>Time Slot</th><th>Greedy Distance</th><th>SSP Distance</th><th>Savings</th><th>Solve Time</th></tr>
@@ -667,7 +667,7 @@
       <div class="card">
         <div class="card-icon">🐳</div>
         <h4>Infrastructure</h4>
-        <p><span class="tag tag-green">Docker</span><span class="tag tag-blue">Docker Compose</span><span class="tag tag-blue">Nginx</span><br>4-container orchestration (backend, frontend, db, osrm); hot-reload development; multi-stage production builds.</p>
+        <p><span class="tag tag-green">Docker</span><span class="tag tag-blue">Docker Compose</span><br>4-container orchestration (backend, frontend, db, osrm); hot-reload development mode with live volume mounts.</p>
       </div>
       <div class="card">
         <div class="card-icon">📐</div>
