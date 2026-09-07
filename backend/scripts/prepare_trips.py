@@ -9,7 +9,7 @@ prepare_trips.py — 真实 Citi Bike 数据预处理
   data/manhattan_zones.geojson — 用站点 buffer 自动生成的真实区域(曼哈顿周边真实坐标)
 
 策略:
-  1. 以 NYU Washington Square Park (40.7293, -73.9974) 为中心,矩形 bbox 半径 ~2km 过滤
+  1. 以 Washington Square Park (40.7293, -73.9974) 为中心,矩形 bbox 半径 ~2km 过滤
   2. 统计 bbox 内所有站点频次,取 top-30 作为预测区域
   3. 仅保留 top-30 站点之间的 trip
   4. 按 5min 时间片聚合:每个站点每片的 outflow(借出) / inflow(还入)
@@ -33,7 +33,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 CITIBIKE_DIR = ROOT / "citibike"
 OUT_DIR = ROOT / "data"
 
-# NYU Washington Square Park 中心
+# Washington Square Park 中心
 CENTER_LAT = 40.7293
 CENTER_LNG = -73.9974
 # bbox 半度偏移(约 ±2km)
@@ -60,7 +60,7 @@ def main() -> None:
     print("=" * 70)
     print("Citi Bike 真实数据预处理")
     print("=" * 70)
-    print(f"中心点: NYU Washington Square Park ({CENTER_LAT}, {CENTER_LNG})")
+    print(f"中心点: Washington Square Park ({CENTER_LAT}, {CENTER_LNG})")
     print(f"bbox: lng[{BBOX[0]:.4f}, {BBOX[2]:.4f}] lat[{BBOX[1]:.4f}, {BBOX[3]:.4f}]")
     print(f"目标: top-{TOP_N_STATIONS} 站点, {TIME_BIN_MIN}min 聚合")
     print()
@@ -429,7 +429,7 @@ def main() -> None:
     print("=" * 70)
     print("预处理完成。输出概览:")
     print(f"  数据期: {outflow.index[0].date()} ~ {outflow.index[-1].date()}  ({N_day} 天)")
-    print(f"  站点数: {TOP_N_STATIONS} (NYU 周边 top 频次)")
+    print(f"  站点数: {TOP_N_STATIONS} (Washington Square Park 周边 top 频次)")
     print(f"  时间片: {TIME_BIN_MIN}min × {T_per_day}/天 × {N_day} 天 = {valid_T} 片")
     print(f"  每站容量: {capacity_per_station.min():.0f} ~ {capacity_per_station.max():.0f} "
           f"(从真实波动推断,非固定值)")

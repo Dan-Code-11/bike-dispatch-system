@@ -38,7 +38,7 @@
 - **Min-cost flow (SSP solver)** — global optimal vehicle rebalancing, 0.01–0.05s per solve
 - **OSRM real-street routing** — actual road network distance, not straight-line
 - **Greedy fallback** — instant nearest-pair matching when OSRM unavailable
-- **13–16% cost reduction** vs greedy baseline at peak hours
+- **11–16% cost reduction** vs greedy baseline at peak hours
 
 ### Spatial Analytics (4 layers)
 - **Timeline replay** — 24h space-time cube animation, 3 modes (need / ratio / vehicles)
