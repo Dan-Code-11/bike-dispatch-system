@@ -13,7 +13,17 @@
 
 ## Screenshots
 
-> Screenshots coming soon — dispatch dashboard, spatial analytics, and prediction lab.
+<p align="center">
+  <img src="screenshots/home.png" alt="Home overview" width="49%"/>
+  <img src="screenshots/dispatch.png" alt="Dispatch board" width="49%"/>
+</p>
+<p align="center">
+  <img src="screenshots/od-flows.png" alt="OD tidal flow arcs" width="49%"/>
+  <img src="screenshots/timeline.png" alt="Timeline replay" width="49%"/>
+</p>
+<p align="center">
+  <img src="screenshots/analytics.png" alt="Operations analytics" width="60%"/>
+</p>
 
 ---
 
