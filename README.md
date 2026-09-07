@@ -100,7 +100,7 @@ docker compose down
 | Backend | FastAPI, Python 3.10 |
 | ML | PyTorch, NumPy |
 | Optimization | Custom SSP min-cost flow, OSRM |
-| Database | PostgreSQL (dispatch history registry) |
+| Database | PostgreSQL (alert rules & history) |
 | Data | Citi Bike NYC System Data (© Lyft) |
 | DevOps | Docker Compose, GitHub Codespaces |
 
