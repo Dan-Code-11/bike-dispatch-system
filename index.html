@@ -324,7 +324,7 @@
       <div class="stat"><div class="stat-num">151</div><div class="stat-label">Days of real trip data</div></div>
       <div class="stat"><div class="stat-num">30</div><div class="stat-label">Manhattan stations</div></div>
       <div class="stat"><div class="stat-num">288</div><div class="stat-label">Time slices per day (5-min)</div></div>
-      <div class="stat"><div class="stat-num">~1.13M</div><div class="stat-label">Total data points</div></div>
+      <div class="stat"><div class="stat-num">1.30M</div><div class="stat-label">Total data points</div></div>
       <div class="stat"><div class="stat-num">0.05s</div><div class="stat-label">Dispatch solve time (SSP)</div></div>
     </div>
   </div>
@@ -397,7 +397,7 @@
       </div>
       <div class="timeline-item">
         <h4>Step 3 · Temporal Aggregation</h4>
-        <p>Trip events are aggregated into 5-minute bins (288 slices/day) to produce station-level inflow/outflow counts. A cumulative inventory model tracks bike availability across the network, conserving total fleet size (~1,134 bikes) with ~±1% daily fluctuation from in-transit vehicles.</p>
+        <p>Trip events are aggregated into 5-minute bins (288 slices/day) to produce station-level inflow/outflow counts. A cumulative inventory model tracks bike availability across the network, conserving total fleet size (mean ~1,133 bikes; range 1,080–1,148 across all slices).</p>
       </div>
       <div class="timeline-item">
         <h4>Step 4 · Data Cube Serialization</h4>
@@ -412,8 +412,8 @@
     <h3>Data Quality & Consistency</h3>
     <table>
       <tr><th>Metric</th><th>Value</th><th>Note</th></tr>
-      <tr><td>Total fleet (in-station)</td><td>1,126 – 1,142 bikes</td><td>~±1% daily fluctuation</td></tr>
-      <tr><td>Station saturation range</td><td>75% – 131%</td><td>All-day, all stations</td></tr>
+      <tr><td>Total fleet (in-station)</td><td>1,080 – 1,148 bikes</td><td>mean 1,133; in-transit churn over 151 days</td></tr>
+      <tr><td>Station saturation range</td><td>13% – 87%</td><td>bikes/capacity, all-day, all stations</td></tr>
       <tr><td>Data coverage</td><td>151 days × 288 slices × 30 stations</td><td>~1.3M records</td></tr>
       <tr><td>Missing data</td><td>0%</td><td>Complete coverage Jan–May 2025</td></tr>
       <tr><td>Timezone</td><td>America/New_York (EDT/EST)</td><td>zoneinfo, auto DST</td></tr>
@@ -496,17 +496,17 @@
        └── Head B (Curve): 36 steps × 5min = 3h full trajectory
 <span class="keyword">Loss</span>: 0.55×MSE(anchors) + 0.35×MSE(curve) + 0.10×MAE(anchors)
 <span class="keyword">Optimizer</span>: AdamW, lr=3e-4, cosine schedule
-<span class="keyword">Weights</span>: lstm_weights_multi.pth (~940KB)
+<span class="keyword">Weights</span>: lstm_weights_multi.pth (~922KB)
     </div>
 
     <h3>Baseline Comparison</h3>
     <p>The model is evaluated against a <b>persistence baseline</b> (last observed value carried forward). Improvement is measured as percentage reduction in MAE across all horizons and stations.</p>
     <table>
       <tr><th>Horizon</th><th>LSTM MAE</th><th>Persistence MAE</th><th>Improvement</th></tr>
-      <tr><td>1 hour</td><td>2.14 bikes</td><td>3.87 bikes</td><td><span class="tag tag-green">−44.7%</span></td></tr>
-      <tr><td>2 hours</td><td>3.02 bikes</td><td>4.61 bikes</td><td><span class="tag tag-green">−34.5%</span></td></tr>
-      <tr><td>3 hours</td><td>3.78 bikes</td><td>5.24 bikes</td><td><span class="tag tag-green">−27.9%</span></td></tr>
-      <tr><td>Aggregate</td><td>2.98 bikes</td><td>4.57 bikes</td><td><span class="tag tag-green">−34.8%</span></td></tr>
+      <tr><td>1 hour</td><td>1.69 bikes</td><td>1.68 bikes</td><td><span class="tag tag-yellow">+0.9%</span></td></tr>
+      <tr><td>2 hours</td><td>2.43 bikes</td><td>2.58 bikes</td><td><span class="tag tag-green">+5.8%</span></td></tr>
+      <tr><td>3 hours</td><td>3.05 bikes</td><td>3.36 bikes</td><td><span class="tag tag-green">+9.0%</span></td></tr>
+      <tr><td>Aggregate</td><td>2.39 bikes</td><td>2.54 bikes</td><td><span class="tag tag-green">+5.8%</span></td></tr>
     </table>
 
     <h3>Prediction API</h3>
@@ -542,12 +542,10 @@
     <p>The solver uses an <b>integer-weighted Successive Shortest Path</b> algorithm with Dijkstra + Johnson's potentials for negative-cost residual edges. Weights are scaled by ×100 and rounded to integers, eliminating floating-point precision issues. This replaces the earlier networkx <code>min_cost_flow</code> (network_simplex) which took 20+ seconds on 87-vehicle scenarios.</p>
 
     <table>
-      <tr><th>Time Slot</th><th>Greedy Distance</th><th>SSP Distance</th><th>Savings</th><th>Solve Time</th></tr>
-      <tr><td>07:30</td><td>24.6 km</td><td>21.8 km</td><td><span class="tag tag-green">−11.4%</span></td><td>0.02s</td></tr>
-      <tr><td>08:30</td><td>36.8 km</td><td>31.9 km</td><td><span class="tag tag-green">−13.3%</span></td><td>0.03s</td></tr>
-      <tr><td>12:00</td><td>18.2 km</td><td>16.1 km</td><td><span class="tag tag-green">−11.5%</span></td><td>0.01s</td></tr>
-      <tr><td>17:00</td><td>20.7 km</td><td>17.3 km</td><td><span class="tag tag-green">−16.4%</span></td><td>0.04s</td></tr>
-      <tr><td>18:00</td><td>22.1 km</td><td>18.9 km</td><td><span class="tag tag-green">−14.5%</span></td><td>0.05s</td></tr>
+      <tr><th>Scenario</th><th>Basis</th><th>Comparison</th><th>Savings vs greedy</th><th>Solve time</th></tr>
+      <tr><td>Morning peak (07:30–09:30)</td><td>representative scenario</td><td>SSP vs greedy</td><td><span class="tag tag-green">−11–13%</span></td><td>&lt;0.05s</td></tr>
+      <tr><td>Midday off-peak (12:00)</td><td>representative scenario</td><td>SSP vs greedy</td><td><span class="tag tag-green">−11–12%</span></td><td>&lt;0.05s</td></tr>
+      <tr><td>Evening peak (17:00–19:00)</td><td>representative scenario</td><td>SSP vs greedy</td><td><span class="tag tag-green">−14–16%</span></td><td>&lt;0.05s</td></tr>
     </table>
 
     <h3>Routing Geometry</h3>
@@ -586,12 +584,12 @@
     </div>
 
     <h3>Spatial Autocorrelation Results</h3>
-    <p>At 09:00 for the <i>vehicles</i> attribute with KNN(k=5) weights:</p>
+    <p>Reproduced on the 30 Manhattan stations with KNN(k=5) row-standardized weights (results vary by hour and attribute; commuter peaks consistently show significant positive autocorrelation):</p>
     <div class="stats-row">
-      <div class="stat"><div class="stat-num">0.056</div><div class="stat-label">Moran's I</div></div>
-      <div class="stat"><div class="stat-num">7.36</div><div class="stat-label">Z-score</div></div>
-      <div class="stat"><div class="stat-num">~0</div><div class="stat-label">p-value (reject CSR)</div></div>
-      <div class="stat"><div class="stat-num">Clustered</div><div class="stat-label">Pattern</div></div>
+      <div class="stat"><div class="stat-num">KNN k=5</div><div class="stat-label">Spatial weights</div></div>
+      <div class="stat"><div class="stat-num">199</div><div class="stat-label">Conditional permutations</div></div>
+      <div class="stat"><div class="stat-num">p &lt; 0.01</div><div class="stat-label">Significance (Cliff &amp; Ord)</div></div>
+      <div class="stat"><div class="stat-num">Clustered</div><div class="stat-label">Pattern at peak hours</div></div>
     </div>
     <p>The significant positive Moran's I confirms that station availability is <b>spatially clustered</b> at commute hours — residential areas show LL (low-low) clusters while campus-core/commercial areas show HH (high-high) clusters. This validates the need for geographically-aware rebalancing rather than uniform redistribution.</p>
   </div>
@@ -657,7 +655,7 @@
       <div class="card">
         <div class="card-icon">🗄️</div>
         <h4>Data Layer</h4>
-        <p><span class="tag tag-green">PostgreSQL</span><span class="tag tag-blue">PostGIS</span><span class="tag tag-blue">NPZ</span><span class="tag tag-yellow">GeoJSON</span><br>Persistent storage for alerts and dispatch history; NPZ cubes for fast time-slice access; GeoJSON for zone definitions.</p>
+        <p><span class="tag tag-green">PostgreSQL</span><span class="tag tag-blue">NPZ</span><span class="tag tag-yellow">GeoJSON</span><br>Persistent storage for alert rules and dispatch history; NPZ cubes for fast time-slice access; GeoJSON for zone definitions.</p>
       </div>
       <div class="card">
         <div class="card-icon">🧮</div>
@@ -687,26 +685,26 @@
     <div class="stats-row">
       <div class="stat"><div class="stat-num">2s</div><div class="stat-label">WebSocket push interval</div></div>
       <div class="stat"><div class="stat-num">0.05s</div><div class="stat-label">Dispatch solve (p95)</div></div>
-      <div class="stat"><div class="stat-num">0.12s</div><div class="stat-label">Prediction inference</div></div>
-      <div class="stat"><div class="stat-num">0.08s</div><div class="stat-label">Timeline query (288 slices)</div></div>
-      <div class="stat"><div class="stat-num">50ms</div><div class="stat-label">OSRM route (cached)</div></div>
+      <div class="stat"><div class="stat-num">CPU</div><div class="stat-label">Prediction inference</div></div>
+      <div class="stat"><div class="stat-num">O(1)</div><div class="stat-label">Timeline slice lookup</div></div>
+      <div class="stat"><div class="stat-num">LRU</div><div class="stat-label">OSRM route cache</div></div>
     </div>
 
-    <h3>API Endpoint Latency</h3>
+    <h3>API Endpoints</h3>
     <table>
-      <tr><th>Endpoint</th><th>Method</th><th>p50</th><th>p95</th><th>Notes</th></tr>
-      <tr><td>/api/monitor/stats</td><td>GET</td><td>8ms</td><td>15ms</td><td>In-memory state</td></tr>
-      <tr><td>/api/ws/live</td><td>WS</td><td>—</td><td>—</td><td>2s push, ~2KB/msg</td></tr>
-      <tr><td>/api/predict</td><td>POST</td><td>120ms</td><td>180ms</td><td>LSTM inference (CPU)</td></tr>
-      <tr><td>/api/dispatch</td><td>POST</td><td>30ms</td><td>50ms</td><td>SSP solver + OSRM cache</td></tr>
-      <tr><td>/api/gis/timeline</td><td>GET</td><td>60ms</td><td>120ms</td><td>NPZ cube indexing</td></tr>
-      <tr><td>/api/gis/od_flows</td><td>GET</td><td>200ms</td><td>400ms</td><td>OD matrix + IPF fallback</td></tr>
-      <tr><td>/api/gis/spatial_stats</td><td>GET</td><td>150ms</td><td>300ms</td><td>Moran's I + 199 permutations</td></tr>
-      <tr><td>/api/zones</td><td>GET</td><td>5ms</td><td>10ms</td><td>GeoJSON, cached</td></tr>
+      <tr><th>Endpoint</th><th>Method</th><th>Implementation</th><th>Notes</th></tr>
+      <tr><td>/api/monitor/stats</td><td>GET</td><td>In-memory state</td><td>Sub-ms KPI read</td></tr>
+      <tr><td>/api/ws/live</td><td>WS</td><td>asyncio.sleep(2) loop</td><td>2s push, ~2KB/msg</td></tr>
+      <tr><td>/api/predict</td><td>POST</td><td>PyTorch CPU inference</td><td>LSTM 1h/2h/3h + curve</td></tr>
+      <tr><td>/api/dispatch</td><td>POST</td><td>SSP solver + OSRM cache</td><td>&lt;50ms typical solve</td></tr>
+      <tr><td>/api/gis/timeline</td><td>GET</td><td>NPZ cube slicing</td><td>288-slice playback source</td></tr>
+      <tr><td>/api/gis/od_flows</td><td>GET</td><td>OD matrix + IPF fallback</td><td>Top-K filtered arcs</td></tr>
+      <tr><td>/api/gis/spatial_stats</td><td>GET</td><td>Moran's I + 199 permutations</td><td>KNN / distance-band weights</td></tr>
+      <tr><td>/api/zones</td><td>GET</td><td>GeoJSON, cached</td><td>30 station polygons</td></tr>
     </table>
 
     <h3>Frontend Performance</h3>
-    <p>The production build yields a <b>1.5MB JS bundle</b> (502KB gzipped) and <b>281KB CSS</b> (76KB gzipped). Key optimizations include: v-show (not v-if) for spatial lab tab switching to avoid canvas disposal/recreation, marker-layer separation for time-series playback (no full chart redraw per frame), OSRM route caching, and tile proxy with 3-second timeout and in-memory caching.</p>
+    <p>The production build uses Vite tree-shaking and vendor chunk splitting; lazy-loaded views keep the initial bundle small. Key optimizations include: v-show (not v-if) for spatial lab tab switching to avoid canvas disposal/recreation, marker-layer separation for time-series playback (no full chart redraw per frame), OSRM route caching, and tile proxy with 3-second timeout and in-memory caching.</p>
   </div>
 </section>
 
